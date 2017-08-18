@@ -1,3 +1,4 @@
+// Grid Screen Directive
 angular.module("app").directive("gridScreen",function($http){
     return{
         restrict: 'E',
@@ -18,6 +19,7 @@ angular.module("app").directive("gridScreen",function($http){
     };
 });
 
+// Grid Column Directive
 angular.module("app").directive("gridColumns",function(){
     return{
         restrict: 'E',
@@ -27,14 +29,15 @@ angular.module("app").directive("gridColumns",function(){
             this.addColumn = function(col){
                 column.push(col);
             };
-            this.getColumn  = function(){
+            this.getColumns  = function(){
                 return column;
             }
         },
         link: function(scope, element, attr,controller) {
             var gridScreenController = controller[0];
             var gridColumnsController = controller[1];
-            gridScreenController.setColumns(gridColumnsController.getColumn();
+            gridScreenController.setColumns(gridColumnsController.getColumns());
+            console.log('linked Grid Columns');
         }
     };
 });
@@ -48,6 +51,7 @@ angular.module("app").directive("gridColumn",function(){
                title: attr.title,
                field: attr.field
            });
+           console.log("linked Column", attr.title);
        }
    };
 });
@@ -55,7 +59,7 @@ angular.module("app").directive("gridColumn",function(){
 angular.module("app").directive("grid",function(){
     return {
         restrict: 'E',
-        templateUrl: "/template/as_table.html",
+        templateUrl: "table.html",
         replace: true,
         controller: function ($scope) {
             $scope.$on('render', function (e, rows, cols) {
@@ -66,6 +70,7 @@ angular.module("app").directive("grid",function(){
     };
 });
 
+// With Inline Editor Directive
 angular.module("app").directive("withInlineEditor", function() {
     return {
         restrict: 'A',
@@ -78,4 +83,31 @@ angular.module("app").directive("withInlineEditor", function() {
             console.log('linked withInlineEditor');
         }
     };
+});
+
+// Editor link initializer directive
+angular.module("app").directive("editorLink",function($compile,$templateCache){
+    return{
+        restrict: 'E',
+        templateUrl: 'edit_link.html',
+        controller: function($scope){
+            $scope.editing = false;
+            $scope.edit = function(row){
+                $scope.$broadcast('edit',row);
+            };
+        },
+        link: function(scope,element,attributes) {
+            scope.$on("edit",function(e,row){
+               scope.editing = !scope.editing;
+               $(element.parents("tr")).toggleClass('editing',scope.editing);
+               if(scope.editing){
+                   scope.editor = scope.editor || $compile($templateCache.get('edit.html'))(scope);
+                   $(scope.editor).insertAfter(element.parents("tr"));
+               } else{
+                   $(scope.editor).remove();
+               }
+            });
+            console.log("linked edit_link ");
+        }
+    }
 });

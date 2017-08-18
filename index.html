@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app" class="ng-scope">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="style.css" >
+    <script src="lib/jquery.js"></script>
+    <script src="lib/angular.js"></script>
+    <script src="app_module.js"></script>
+    <script src="grid_directive.js"></script>
+    <title>Custom Directive on Editing Table</title>
 </head>
 <body>
-
+    <h1> Advanced Directive with Angular </h1>
+    <grid-screen resource="data.json">
+        <grid-columns>
+            <grid-column title="Product"     field="product"></grid-column>
+            <grid-column title="Description" field="description"></grid-column>
+            <grid-column title="Cost"        field="cost"></grid-column>
+        </grid-columns>
+        <grid with-inline-editor></grid>
+    </grid-screen>
 </body>
 </html>
